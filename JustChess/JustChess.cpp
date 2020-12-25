@@ -43,5 +43,5 @@ CExample* exmapleFunction()
 
 int main()
 {
-    std::cout << "Hello World!\n";
+    std::cout << "Hello, this was done in a separate branch!\n";
 }

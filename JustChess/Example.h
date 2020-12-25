@@ -1,5 +1,9 @@
 #pragma once
 
+/** @defgroup group1 The First Group
+ *  This is the first group
+ */
+
 /**
  * \class CExample
  *
@@ -61,8 +65,25 @@ public:
     */
   void* VeryUsefulMethod(int level);
 
-private:
+  /**
+  * This is just another comment of an inline funciton
+  */
+  void DoReallyNothing(){}
 
+  void DoReallyNothingAgain(){}
+
+  /**
+  * @ingroup group1
+  * @brief function 1 in group 1
+  */
+  void func1InGroup1(){}
+  /**
+  * @ingroup group1
+  * @brief function 2 in group 1
+  */
+  void func2InGroup1(){}
+
+private:
   const char* m_question; ///< the question
   int m_answer;           ///< the answer 
 
