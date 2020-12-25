@@ -37,7 +37,7 @@ public:
   CExample()
     : m_question(nullptr)
     , m_answer()
-  {};
+  {}
 
   /// Destructor
   ~CExample() = default;
@@ -59,7 +59,7 @@ public:
     * And returns exceptionally useful results.
     * Use it everyday with good health.
     */
-  void* VeryUsefulMethod(bool level);
+  void* VeryUsefulMethod(int level);
 
 private:
 

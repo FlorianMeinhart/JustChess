@@ -8,7 +8,7 @@ void CExample::DoNothing()
 {
 }
 
-void* CExample::VeryUsefulMethod(bool level)
+void* CExample::VeryUsefulMethod(int level)
 {
   return nullptr;
 }
