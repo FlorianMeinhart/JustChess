@@ -139,19 +139,6 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="AnotherExample.cpp" />
-    <ClCompile Include="Example.cpp" />
-    <ClCompile Include="InnerClass.cpp" />
-    <ClCompile Include="JustChess.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="AnotherExample.h" />
-    <ClInclude Include="Example.h" />
-    <ClInclude Include="InnerClass.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Diagrams\ExampleDiagram.cd" />
-    <None Include="Diagrams\PlantUMLtest.puml" />
     <None Include="Diagrams\style.puml" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
