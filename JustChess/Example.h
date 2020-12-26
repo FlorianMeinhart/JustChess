@@ -1,5 +1,7 @@
 #pragma once
 
+#include "InnerClass.h"
+
 /** @defgroup group1 The First Group
  *  This is the first group
  */
@@ -86,6 +88,9 @@ public:
 private:
   const char* m_question; ///< the question
   int m_answer;           ///< the answer 
+
+  CInnerClass m_innerClass; /// This is an inner class
+
 
 };                              // end of class CExample
 

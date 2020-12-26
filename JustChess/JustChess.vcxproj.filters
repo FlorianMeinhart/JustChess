@@ -13,6 +13,9 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="Diagrams">
+      <UniqueIdentifier>{c1667282-e1cb-4d5b-8b0e-e874301be1ac}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="JustChess.cpp">
@@ -21,10 +24,33 @@
     <ClCompile Include="Example.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="AnotherExample.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="InnerClass.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="AnotherExample.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="Example.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="InnerClass.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Diagrams\ExampleDiagram.cd">
+      <Filter>Diagrams</Filter>
+    </None>
+    <None Include="Diagrams\PlantUMLtest.puml">
+      <Filter>Diagrams</Filter>
+    </None>
+    <None Include="Diagrams\style.puml">
+      <Filter>Diagrams</Filter>
+    </None>
   </ItemGroup>
 </Project>
