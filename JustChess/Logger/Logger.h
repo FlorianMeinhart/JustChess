@@ -1,12 +1,18 @@
 #pragma once
 
+/**
+ *  @defgroup logging Logging
+ */
+
 #include <memory>
 #include <string_view>
 
 /*!******************************************************************
 * @interface ILogger
 * 
-* @brief Interface for Logger.
+* @ingroup logging
+* 
+* @brief Interface for logger.
 * 
 * @details There are three declared methods:
 * - @c Info()
@@ -14,6 +20,20 @@
 * - @c Error()
 * 
 * <tt>Logger</tt> is defined as <tt>std::shared_ptr<ILogger></tt>.
+* 
+* <b>Example:</b> Create a @c shared_ptr of type @c Logger
+* by means of a derived class (e.g. @c CStandardOutputLogger).
+* @code
+* Logger logger = std::make_shared<CStandardOutputLogger>();
+* logger->Info("Start JustChess");
+* @endcode
+* 
+* @note Logging is realized via dependency injection.
+* @see https://developer-blog.net/professionelles-loggen-unter-c/
+* 
+* @author Florian Meinhart
+* @version 1.0
+* @date 2020/12/26
 ********************************************************************/
 class ILogger
 {
