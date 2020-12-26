@@ -16,10 +16,29 @@
     <Filter Include="Diagrams">
       <UniqueIdentifier>{c1667282-e1cb-4d5b-8b0e-e874301be1ac}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Logger">
+      <UniqueIdentifier>{8b574408-fae8-4c0f-af6d-41e8c557f2e0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Logger">
+      <UniqueIdentifier>{e15b4768-a67e-4c9c-b13d-77fafbe0201e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include="Diagrams\style.puml">
       <Filter>Diagrams</Filter>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="JustChess.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Logger\Logger.h">
+      <Filter>Header Files\Logger</Filter>
+    </ClInclude>
+    <ClInclude Include="Logger\StandardOutputLogger.h">
+      <Filter>Header Files\Logger</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
