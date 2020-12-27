@@ -16,3 +16,4 @@ void CStandardOutputLogger::Error(std::string_view text)
 {
   std::cout << "[ERROR] " << text << std::endl;
 }
+

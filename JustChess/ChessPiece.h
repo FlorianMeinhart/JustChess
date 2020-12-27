@@ -4,4 +4,3 @@ class CChessPiece
 {
   void Move();
 };
-

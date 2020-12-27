@@ -1,0 +1,100 @@
+@startuml BoardAndPieces
+skinparam dpi 400
+
+!define LIGHTBLUE
+!include style.puml
+
+'skinparam linetype ortho
+
+skinparam package<<TransparentLayout>> {
+  shadowing false
+  borderColor Transparent
+  backgroundColor Transparent
+  fontColor Transparent
+  stereotypeFontColor Transparent
+}
+
+package general <<TransparentLayout>> {
+  rectangle Defines [
+    RANKS 8 (rows)
+    FILES 8 (columns)
+  ]
+
+  enum ePiece {
+    ePawn
+    eRook
+    eKnight
+    eBishop
+    eQueen
+    eKing
+  }
+}
+
+Defines -[hidden]-> ePiece
+
+package pieces <<TransparentLayout>> {
+
+  abstract class CChessPiece {
+    -ePiece m_type
+    -uint m_moveCount
+    -bool m_isWhite
+    --
+    +void IncrementMoveCount()
+    .. pure virtual ..
+    +vector<pair<int,int>> GetMoveDirections()
+    +bool CanMultipleSteps()
+    +ePiece GetPieceType()
+    +uint GetMoveCount()
+    +bool IsWhite()
+
+  }
+
+  class CPawn {
+
+  }
+
+  class CRook {
+
+  }
+
+  class CKnight {
+
+  }
+
+  class CBishop {
+
+  }
+
+  class CQueen {
+
+  }
+
+  class CKing {
+
+  }
+}
+
+package board <<TransparentLayout>> {
+  class CChessBoard {
+    - vector<vector<optional<CChessPiece>>> m_board
+  }
+}
+
+CPawn --|> CChessPiece
+CRook --|> CChessPiece
+CKnight --|> CChessPiece
+CBishop --|> CChessPiece
+CQueen --|> CChessPiece
+CKing --|> CChessPiece
+
+board -[hidden]-> pieces
+
+
+@enduml
+
+
+@startuml
+
+(usecase)
+
+@enduml

@@ -341,3 +341,7 @@ healthchecksdb
 
 # Doxygen documentation
 DoxygenDoc/
+
+# Diagram (puml) output
+!Diagrams/out/
+Diagrams/out/*
