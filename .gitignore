@@ -340,8 +340,7 @@ ASALocalRun/
 healthchecksdb
 
 # Doxygen documentation
-DoxygenDoc/
+JustChess/DoxygenDoc/
 
 # Diagram (puml) output
-!Diagrams/out/
-Diagrams/out/*
+JustChess/Diagrams/out/
