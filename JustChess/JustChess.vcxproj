@@ -144,10 +144,12 @@
     <None Include="mainpage.dox" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="ChessPiece.cpp" />
     <ClCompile Include="JustChess.cpp" />
     <ClCompile Include="Logger\StandardOutputLogger.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="ChessPiece.h" />
     <ClInclude Include="Logger\Logger.h" />
     <ClInclude Include="Logger\StandardOutputLogger.h" />
   </ItemGroup>

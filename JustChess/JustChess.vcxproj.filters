@@ -22,6 +22,18 @@
     <Filter Include="Source Files\Logger">
       <UniqueIdentifier>{e15b4768-a67e-4c9c-b13d-77fafbe0201e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Functional">
+      <UniqueIdentifier>{12720c30-1cc0-43a7-9f73-66cc61417f4d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Functional">
+      <UniqueIdentifier>{1481ff1a-b452-45ba-9049-87031dd165ce}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Functional\ChessPieces">
+      <UniqueIdentifier>{6de2f551-601f-4242-9cec-5e5b0170aec6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Functional\ChessPieces">
+      <UniqueIdentifier>{2ac9c3f4-2dee-4b6f-9769-873efe57021d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include="Diagrams\style.puml">
@@ -38,6 +50,9 @@
     <ClCompile Include="Logger\StandardOutputLogger.cpp">
       <Filter>Source Files\Logger</Filter>
     </ClCompile>
+    <ClCompile Include="ChessPiece.cpp">
+      <Filter>Source Files\Functional\ChessPieces</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Logger\Logger.h">
@@ -45,6 +60,9 @@
     </ClInclude>
     <ClInclude Include="Logger\StandardOutputLogger.h">
       <Filter>Header Files\Logger</Filter>
+    </ClInclude>
+    <ClInclude Include="ChessPiece.h">
+      <Filter>Header Files\Functional\ChessPieces</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
