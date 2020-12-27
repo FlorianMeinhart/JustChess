@@ -1,7 +1,6 @@
 #pragma once
 
 #include "Logger.h"
-#include <iostream>
 
 /*!******************************************************************
 * @class CStandardOutputLogger
@@ -10,7 +9,7 @@
 *
 * @brief Logger to console.
 *
-* @details <b>Writes output to console.<b/>
+* @details <b>Writes output to console.</b>
 * 
 * Overrides three methods from @c ILogger:
 * - @c Info()
@@ -25,18 +24,9 @@ class CStandardOutputLogger : public ILogger
 {
 public:
   /// Writes an info text to console.
-  virtual void Info(std::string_view text) override
-  {
-    std::cout << "[INFO] " << text << std::endl;
-  }
+  void Info(std::string_view text) override;
   /// Writes a warning text to console.
-  virtual void Warning(std::string_view text) override
-  {
-    std::cout << "[WARNING] " << text << std::endl;
-  }
+  void Warning(std::string_view text) override;
   /// Writes an error text to console.
-  virtual void Error(std::string_view text) override
-  {
-    std::cout << "[ERROR] " << text << std::endl;
-  }
+  void Error(std::string_view text) override;
 };

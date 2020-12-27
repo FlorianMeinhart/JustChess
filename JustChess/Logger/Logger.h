@@ -14,7 +14,7 @@
 * 
 * @brief Interface for logger.
 * 
-* @details There are three declared methods:
+* @details There are three declared methods for logging:
 * - @c Info()
 * - @c Warning()
 * - @c Error()
