@@ -141,6 +141,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <None Include="Diagrams\style.puml" />
+    <None Include="mainpage.dox" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="JustChess.cpp" />

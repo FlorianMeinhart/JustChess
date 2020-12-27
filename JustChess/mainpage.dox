@@ -1,0 +1,36 @@
+/**
+\mainpage
+
+\section justchess Let's play Chess
+
+This is the documentation for <b>JustChess</b>, a simple program to play chess.
+
+Sections:
+- \ref functionality
+- \ref gui
+- \ref network
+
+
+<!-- START: subsections -->
+
+<hr>
+
+\subsection functionality Functionality
+
+This section provides an overview of the general functionality.
+
+<hr>
+
+\subsection gui GUI
+
+
+<hr>
+
+\subsection network Network
+
+
+<hr>
+
+\ref justchess "Back to top"
+
+*/
