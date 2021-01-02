@@ -4,9 +4,6 @@
  *  @defgroup logging Logging
  */
 
-#include <memory>
-#include <string_view>
-
 /*!******************************************************************
 * @interface ILogger
 * 
@@ -39,9 +36,9 @@ class ILogger
 {
 public:
   virtual ~ILogger() = default;
-  virtual void Info(std::string_view text) = 0;
-  virtual void Warning(std::string_view text) = 0;
-  virtual void Error(std::string_view text) = 0;
+  virtual void Info(std::string_view text, std::string_view file = "", int line = 0) = 0;
+  virtual void Warning(std::string_view text, std::string_view file = "", int line = 0) = 0;
+  virtual void Error(std::string_view text, std::string_view file = "", int line = 0) = 0;
 };
 
 using Logger = std::shared_ptr<ILogger>;

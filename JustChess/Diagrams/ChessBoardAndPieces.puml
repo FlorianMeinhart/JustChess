@@ -15,6 +15,7 @@ skinparam package<<TransparentLayout>> {
 }
 
 package general <<TransparentLayout>> {
+
   rectangle Defines [
     RANKS 8 (rows)
     FILES 8 (columns)
@@ -27,6 +28,7 @@ package general <<TransparentLayout>> {
     eBishop
     eQueen
     eKing
+    eNone
   }
 }
 
@@ -75,10 +77,45 @@ package pieces <<TransparentLayout>> {
 }
 
 package board <<TransparentLayout>> {
+
+  class CGamePlay {
+    -CChessBoard m_chessBoard
+    -pair<CPlayer, CPlayer> m_players
+    +bool Move(uint fromRank, int fromFile, uint toRank, int toFile,)
+    +void Resignation(bool fromWhite)
+    +bool OfferDraw(fromWhite)
+  }
+
+  class CPlayer {
+
+  }
+
   class CChessBoard {
-    - vector<vector<optional<CChessPiece>>> m_board
+    -vector<vector<unique_ptr<CChessPiece>>> m_board
+    -vector<unique_ptr<CChessPiece>> m_removedPieces
+    -vector<vector<vector<ePiece>>> m_record
+    -bool m_whiteHasToMove 
+    -bool m_whiteAlreadyCastled
+    -bool m_blackAlreadyCastled
+    -unit m_turnCount
+    -uint m_turnsWithoutPawnOrCapture
+    +void Reset()
+    +ePiece GetPieceType(uint rank, int file)
+    +vector<vector<bool>> GetValidMoves(uint rank, int file)
+    +vector<vector<bool>> GetFieldsAttacked(bool byWhite)
+    +bool InCheck(bool forWhite)
+    +bool CanCastle(bool forWhite)
+    +void PromotePawn(uint rank, int file, ePiece pieceType)
+    +bool Checkmate()
+    +bool MaterialInsufficient()
+    +bool ThreefoldRepitition()
+    +bool DueFiftyMoveRule()
+    +bool Stalemate()
   }
 }
+
+CGamePlay -right[hidden]-> CChessBoard
+board -[hidden]-> pieces
 
 CPawn --|> CChessPiece
 CRook --|> CChessPiece
@@ -87,14 +124,21 @@ CBishop --|> CChessPiece
 CQueen --|> CChessPiece
 CKing --|> CChessPiece
 
-board -[hidden]-> pieces
-
+CGamePlay "1" *-- "1" CChessBoard
+CGamePlay "1" *-left- "2" CPlayer
+CChessBoard "1" *-- "   0..*" CChessPiece : chess board can\n have many pieces
 
 @enduml
 
 
 @startuml
 
-(usecase)
+(Checkmate) --> (Win/Loss)
+(Resignation) --> (Win/Loss)
+(Draw By Agreement) --> (Draw)
+(Insufficient Material) --> (Draw)
+(Threefold Repitition) --> (Draw)
+(Fifty-Move Rule) --> (Draw)
+(Stalemate) --> (Draw)
 
 @enduml

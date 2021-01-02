@@ -24,9 +24,9 @@ class CStandardOutputLogger : public ILogger
 {
 public:
   /// Writes an info text to console.
-  void Info(std::string_view text) override;
+  void Info(std::string_view text, std::string_view file, int line) override;
   /// Writes a warning text to console.
-  void Warning(std::string_view text) override;
+  void Warning(std::string_view text, std::string_view file, int line) override;
   /// Writes an error text to console.
-  void Error(std::string_view text) override;
+  void Error(std::string_view text, std::string_view file, int line) override;
 };

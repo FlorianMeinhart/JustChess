@@ -34,6 +34,12 @@
     <Filter Include="Source Files\Functional\ChessPieces">
       <UniqueIdentifier>{2ac9c3f4-2dee-4b6f-9769-873efe57021d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Functional\ChessBoard">
+      <UniqueIdentifier>{f7679679-cba3-421b-a729-965921659070}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Functional\ChessBoard">
+      <UniqueIdentifier>{6e28e5cf-a554-48a1-b2f7-c6980cc401e8}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include="Diagrams\style.puml">
@@ -50,8 +56,17 @@
     <ClCompile Include="Logger\StandardOutputLogger.cpp">
       <Filter>Source Files\Logger</Filter>
     </ClCompile>
-    <ClCompile Include="ChessPiece.cpp">
+    <ClCompile Include="stdafx.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Functional\ChessPieces\ChessPiece.cpp">
       <Filter>Source Files\Functional\ChessPieces</Filter>
+    </ClCompile>
+    <ClCompile Include="Functional\ChessPieces\OtherPieces.cpp">
+      <Filter>Source Files\Functional\ChessPieces</Filter>
+    </ClCompile>
+    <ClCompile Include="Functional\ChessBoard\ChessBoard.cpp">
+      <Filter>Source Files\Functional\ChessBoard</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -61,8 +76,20 @@
     <ClInclude Include="Logger\StandardOutputLogger.h">
       <Filter>Header Files\Logger</Filter>
     </ClInclude>
-    <ClInclude Include="ChessPiece.h">
+    <ClInclude Include="Functional\ChessPieces\ChessPiece.h">
       <Filter>Header Files\Functional\ChessPieces</Filter>
+    </ClInclude>
+    <ClInclude Include="Functional\EnumsAndStaticMaps.h">
+      <Filter>Header Files\Functional</Filter>
+    </ClInclude>
+    <ClInclude Include="stdafx.h">
+      <Filter>Header Files\Logger</Filter>
+    </ClInclude>
+    <ClInclude Include="Functional\ChessPieces\OtherPieces.h">
+      <Filter>Header Files\Functional\ChessPieces</Filter>
+    </ClInclude>
+    <ClInclude Include="Functional\ChessBoard\ChessBoard.h">
+      <Filter>Header Files\Functional\ChessBoard</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

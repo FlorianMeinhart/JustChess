@@ -1,19 +1,25 @@
-#include <iostream>
+#include <stdafx.h>
 
 #include "StandardOutputLogger.h"
 
-void CStandardOutputLogger::Info(std::string_view text)
+void CStandardOutputLogger::Info(std::string_view text, std::string_view file, int line)
 {
-  std::cout << "[INFO] " << text << std::endl;
+  std::cout << "[INFO] " << text <<
+    (file.empty() ? "" : "\n\tFILE: ") << (file.empty() ? "" : file) <<
+    (line ? "\n\tLINE: " : "") << (line ? std::to_string(line) : "") << std::endl ;
 }
 
-void CStandardOutputLogger::Warning(std::string_view text)
+void CStandardOutputLogger::Warning(std::string_view text, std::string_view file, int line)
 {
-  std::cout << "[WARNING] " << text << std::endl;
+  std::cout << "[WARNING] " << text <<
+    (file.empty() ? "" : "\n\tFILE: ") << (file.empty() ? "" : file) <<
+    (line ? "\n\tLINE: " : "") << (line ? std::to_string(line) : "") << std::endl;
 }
 
-void CStandardOutputLogger::Error(std::string_view text)
+void CStandardOutputLogger::Error(std::string_view text, std::string_view file, int line)
 {
-  std::cout << "[ERROR] " << text << std::endl;
+  std::cout << "[ERROR] " << text <<
+    (file.empty() ? "" : "\n\tFILE: ") << (file.empty() ? "" : file) <<
+    (line ? "\n\tLINE: " : "") << (line ? std::to_string(line) : "") << std::endl;
 }
 
