@@ -6,7 +6,7 @@
 namespace JC
 {
 
-  CChessBoard::piece_t CChessBoard::GetPieceType(eRank rank, eFile file)
+  CChessBoard::piece_t CChessBoard::GetPieceType(eRank rank, eFile file) const
   {
     if (!m_board[rank][file])
     {
@@ -15,7 +15,7 @@ namespace JC
     return std::pair(m_board[rank][file]->GetType(), m_board[rank][file]->IsWhite());
   }
 
-  JC::CChessBoard::boolmat_t CChessBoard::GetValidMoves(eRank rank, eFile file, bool forWhite)
+  JC::CChessBoard::boolmat_t CChessBoard::GetValidMoves(eRank rank, eFile file, bool forWhite) const
   {
     boolmat_t boolmat(RANKS, std::vector<bool>(FILES));
     auto& piece = m_board[rank][file];
@@ -91,10 +91,78 @@ namespace JC
           boolmat[rank + (forWhite ? 1 : -1)][file + 1] = true;
         }
       }
+    }
+    return boolmat;
+  }
 
+  bool CChessBoard::IsChecked(bool forWhite) const
+  {
+    const auto& kingPos = forWhite ? m_whiteKingPos : m_blackKingPos;
+    const auto& oppKingPos = forWhite ? m_blackKingPos : m_whiteKingPos;
+
+    if (m_record.empty())
+    {
+      return false;
+    }
+    // assert that kings are actually at correct (saved) position
+    DEBUG_ASSERT(m_record.back()[kingPos.first][kingPos.second].first == ePiece::king &&
+                 m_record.back()[kingPos.first][kingPos.second].second == forWhite);
+    DEBUG_ASSERT(m_record.back()[oppKingPos.first][oppKingPos.second].first == ePiece::king &&
+                 m_record.back()[oppKingPos.first][oppKingPos.second].second != forWhite);
+
+    // check if king is checked by one the following pieces (queen is included in bishop and rook)
+    if (IsCheckedPieceDirection(ePiece::bishop, forWhite) ||
+        IsCheckedPieceDirection(ePiece::rook, forWhite)   ||
+        IsCheckedPieceDirection(ePiece::knight, forWhite))
+    {
+      return true;
     }
 
-    return boolmat;
+    // check if king is checked by a pawn
+    if (forWhite)
+    {
+      if (kingPos.first < r_7)
+      {
+        if (kingPos.second >= f_B &&
+            m_record.back()[kingPos.first + 1][kingPos.second - 1].second != forWhite &&
+            m_record.back()[kingPos.first + 1][kingPos.second - 1].first == ePiece::pawn)
+        {
+          return true;
+        }
+        if (kingPos.second <= f_G &&
+          m_record.back()[kingPos.first + 1][kingPos.second + 1].second != forWhite &&
+          m_record.back()[kingPos.first + 1][kingPos.second + 1].first == ePiece::pawn)
+        {
+          return true;
+        }
+      }
+    }
+    
+    // check if king is checked by other king (in the game not possible, but validation
+    // necessary in order to get the next valid moves of the king
+    if (std::abs(kingPos.first - oppKingPos.first) <= 1 &&
+        std::abs(kingPos.second - oppKingPos.second) <= 1)
+    {
+      return true;
+    }
+    return false;
+  }
+
+  std::pair<eRank, eFile> CChessBoard::FindKing(const view_t& boardView, bool forWhite) const
+  {
+    for (std::uint16_t rankInt = 0; rankInt < boardView.size(); rankInt++)
+    {
+      for (std::uint16_t fileInt = 0; fileInt < boardView[rankInt].size(); fileInt++)
+      {
+        if (boardView[rankInt][fileInt].first == ePiece::king &&
+          boardView[rankInt][fileInt].second == forWhite)
+        {
+          return std::pair(static_cast<eRank>(rankInt), static_cast<eFile>(fileInt));
+        }
+      }
+    }
+    DEBUG_ASSERT(false); // no king found, should never happen
+    return std::pair(r_1, f_A);
   }
 
   void CChessBoard::Reset()
@@ -117,6 +185,9 @@ namespace JC
         }
       }
     }
+
+    m_whiteKingPos = std::pair(r_1, f_E);
+    m_blackKingPos = std::pair(r_8, f_E);
   }
 
   void CChessBoard::PrintCurrentBoard()
@@ -176,7 +247,7 @@ namespace JC
       std::cout << "\n " << rank + 1 << " | ";
       for (int file = 0; file < FILES; file++)
       {
-        std::cout << s_charRepMap[m_record[uind][rank][file]] << " | ";
+        std::cout << s_charRepMap.at(m_record[uind][rank][file]) << " | ";
       }
       std::cout << "\n   +---+---+---+---+---+---+---+---+";
     }
@@ -221,11 +292,56 @@ namespace JC
     m_record.push_back(view);
   }
 
-  char CChessBoard::PieceCharRep(const std::unique_ptr<CChessPiece>& pPiece)
+  char CChessBoard::PieceCharRep(const std::unique_ptr<CChessPiece>& pPiece) const
   {
     if (pPiece)
-      return s_charRepMap[std::pair(pPiece->GetType(), pPiece->IsWhite())];
+      return s_charRepMap.at(std::pair(pPiece->GetType(), pPiece->IsWhite()));
     else
-      return s_charRepMap[std::pair(ePiece::none, true)];
+      return s_charRepMap.at(std::pair(ePiece::none, true));
   }
+
+  bool CChessBoard::IsCheckedPieceDirection(ePiece pieceDir, bool forWhite) const
+  {
+    const auto& kingPos = forWhite ? m_whiteKingPos : m_blackKingPos;
+
+    bool bishopOrRook = (pieceDir == ePiece::bishop || pieceDir == ePiece::rook);
+
+    int newRank;
+    int newFile;
+
+    for (const auto& dir : s_moveDirMap.at(pieceDir))
+    {
+      newRank = kingPos.first;
+      newFile = kingPos.second;
+
+      do {
+        newRank += dir.first;
+        newFile += dir.second;
+
+        if (newRank >= RANKS || newRank < 0 || newFile >= FILES || newFile < 0)
+        {
+          break; // outside of the board
+        }
+        // check if piece is in the way
+        if (m_record.back()[newRank][newFile].first != ePiece::none)
+        {
+          // break if own piece is in the way
+          if (m_record.back()[newRank][newFile].second == forWhite)
+          {
+            break;
+          }
+          // check if current piece (or queen) is in the way
+          if (m_record.back()[newRank][newFile].first == pieceDir ||
+              (bishopOrRook && m_record.back()[newRank][newFile].first == ePiece::queen))
+          {
+            return true;
+          }
+          // else no piece to give check is in the way
+          break;
+        }
+      } while (bishopOrRook);
+    }
+    return false;
+  }
+
 }

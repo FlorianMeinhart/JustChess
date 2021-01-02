@@ -19,6 +19,9 @@ int main()
   board.CreateNextRecord();
   board.PrintRecord(-1);
 
+  std::cout << board.IsChecked(true) << std::endl;
+  std::cout << board.IsChecked(false) << std::endl;
+
   CheckValidMoves(board);
 
   logger->Info("End JustChess");

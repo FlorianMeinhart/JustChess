@@ -1,5 +1,13 @@
 #pragma once
 
+#ifdef _DEBUG
+#define DEBUG_ASSERT(x) assert(x)
+#else
+#define DEBUG_ASSERT(x) /* DASSERT does nothing when not debugging */
+#endif
+
+
+
 #define RANKS 8
 #define FILES 8
 
@@ -25,8 +33,14 @@ namespace JC
     using view_t = std::vector<std::vector<piece_t>>;
     using record_t = std::vector<view_t>;
 
-    piece_t GetPieceType(eRank rank, eFile file);
-    boolmat_t GetValidMoves(eRank rank, eFile file, bool forWhite);
+    piece_t GetPieceType(eRank rank, eFile file) const;
+    boolmat_t GetValidMoves(eRank rank, eFile file, bool forWhite) const;
+    /// @brief Check if white or black is checked. 
+    /// Makes use of last board view in records.
+    /// @param forWhite
+    /// @return @c true if specified color is checked.
+    bool IsChecked(bool forWhite) const;
+
     //intmat_t GetFieldsAttacked(bool byWhite);
     //
     //bool InCheck(bool forWhite);
@@ -56,7 +70,20 @@ namespace JC
     removed_t m_removed;
     record_t m_record;
 
-    char PieceCharRep(const std::unique_ptr<CChessPiece>& pPiece);
+    /// @brief Save white king position for faster access
+    std::pair<eRank, eFile> m_whiteKingPos;
+    /// @brief Save black king position for faster access
+    std::pair<eRank, eFile> m_blackKingPos;
+
+    /// @brief Returns current position of white or black king
+    /// @param boardView 
+    /// @param forWhite 
+    /// @return position: rank, file
+    std::pair<eRank, eFile> FindKing(const view_t& boardView, bool forWhite) const;
+
+    char PieceCharRep(const std::unique_ptr<CChessPiece>& pPiece) const;
+
+    bool IsCheckedPieceDirection(ePiece pieceDir, bool forWhite) const;
 
   };
 }

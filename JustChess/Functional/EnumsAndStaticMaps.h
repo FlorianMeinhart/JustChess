@@ -38,7 +38,7 @@ namespace JC
   using vecPairRankFile_t = std::vector<std::pair<int, int>>;
 
   /// @brief Map holding possible move directions (rank, file) for each chess piece
-  static std::map<ePiece, vecPairRankFile_t> s_moveDirMap
+  static const std::map<ePiece, vecPairRankFile_t> s_moveDirMap
   {
     {ePiece::none, {{}}},
     {ePiece::pawn, {{}}}, // has to get special treatment
@@ -50,7 +50,7 @@ namespace JC
   };
 
   /// @brief Map holding start positions (rank, file) for each type of chess piece. Second key entry indicates if white (@c true) or black (@c false)
-  static std::map<std::pair<ePiece, bool>, vecPairRankFile_t> s_startPosMap
+  static const std::map<std::pair<ePiece, bool>, vecPairRankFile_t> s_startPosMap
   {
     {std::pair(ePiece::none, true), {{}}},
     {std::pair(ePiece::none, false), {{}}},
@@ -77,7 +77,7 @@ namespace JC
   };
 
   /// @brief Map indicating which chess piece can make multiple moves
-  static std::map<ePiece, bool> s_moveMultipleStepsMap
+  static const std::map<ePiece, bool> s_moveMultipleStepsMap
   {
     {ePiece::none, false},
     {ePiece::pawn, false},
@@ -90,7 +90,7 @@ namespace JC
 
   /// @brief Map for chess piece representation with a character.
   /// Second element in the key pair indicates if white (or black).
-  static std::map<std::pair<ePiece, bool>, char> s_charRepMap
+  static const std::map<std::pair<ePiece, bool>, char> s_charRepMap
   {
     {{ePiece::none, true}, ' '},
     {{ePiece::pawn, true}, 'P'},

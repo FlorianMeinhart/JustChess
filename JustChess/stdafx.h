@@ -8,5 +8,7 @@
 #include <utility>
 #include <map>
 #include <string_view>
+#include <cassert>
+#include <cmath>
 
 #include <Functional/EnumsAndStaticMaps.h>
