@@ -8,17 +8,18 @@ namespace JC
 
   CChessBoard::piece_t CChessBoard::GetPieceType(eRank rank, eFile file) const
   {
-    if (!m_board[rank][file])
+    if (!m_board[_UINT8(rank)][_UINT8(file)])
     {
       return std::pair(ePiece::none, false);
     }
-    return std::pair(m_board[rank][file]->GetType(), m_board[rank][file]->IsWhite());
+    return std::pair(m_board[_UINT8(rank)][_UINT8(file)]->GetType(), 
+                     m_board[_UINT8(rank)][_UINT8(file)]->IsWhite());
   }
 
   JC::CChessBoard::boolmat_t CChessBoard::GetValidMoves(eRank rank, eFile file, bool forWhite) const
   {
     boolmat_t boolmat(RANKS, std::vector<bool>(FILES));
-    auto& piece = m_board[rank][file];
+    auto& piece = m_board[_UINT8(rank)][_UINT8(file)];
     if (!piece || piece->GetType() == ePiece::none || piece->IsWhite() != forWhite)
     {
       return boolmat;
@@ -26,8 +27,8 @@ namespace JC
 
     for (const auto& dir : piece->GetMoveDirs())
     {
-      int newRank = rank + dir.first;
-      int newFile = file + dir.second;
+      int newRank = _UINT8(rank) + dir.first;
+      int newFile = _UINT8(file) + dir.second;
 
       do // repeat when piece can move multiple steps
       {
@@ -66,58 +67,58 @@ namespace JC
       } while (piece->CanMoveMultipleSteps());
     }
     // special treatment for pawns
-    if (piece->GetType() == ePiece::pawn && rank != r_1 && rank != r_8)
+    if (piece->GetType() == ePiece::pawn && rank != eRank::_1 && rank != eRank::_8)
     {
-      if (GetPieceType(static_cast<eRank>(rank + (forWhite ? 1 : -1)), file).first == ePiece::none)
+      if (GetPieceType(static_cast<eRank>(_UINT8(rank) + (forWhite ? 1 : -1)), file).first == ePiece::none)
       {
-        if (!WouldBeCheckedAfterMove(rank, file, static_cast<eRank>(rank + (forWhite ? 1 : -1)),
+        if (!WouldBeCheckedAfterMove(rank, file, static_cast<eRank>(_UINT8(rank) + (forWhite ? 1 : -1)),
           static_cast<eFile>(file), forWhite))
         {
-          boolmat[rank + (forWhite ? 1 : -1)][file] = true;
+          boolmat[_INT64(rank) + (forWhite ? 1 : -1)][_UINT8(file)] = true;
         }
         // check if double step is possible
-        if (rank == (forWhite ? r_2 : r_7))
+        if (rank == (forWhite ? eRank::_2 : eRank::_7))
         {
-          if (GetPieceType(static_cast<eRank>(rank + (forWhite ? 2 : -2)), file).first == ePiece::none)
+          if (GetPieceType(static_cast<eRank>(_UINT8(rank)+ (forWhite ? 2 : -2)), file).first == ePiece::none)
           {
-            if (!WouldBeCheckedAfterMove(rank, file, static_cast<eRank>(rank + (forWhite ? 2 : -2)),
+            if (!WouldBeCheckedAfterMove(rank, file, static_cast<eRank>(_UINT8(rank) + (forWhite ? 2 : -2)),
               static_cast<eFile>(file), forWhite))
             {
-              boolmat[rank + (forWhite ? 2 : -2)][file] = true;
+              boolmat[_INT64(rank) + (forWhite ? 2 : -2)][_UINT8(file)] = true;
             }
           }
         }
       }
       // check if pawn can capture a piece
-      if (file >= f_B)
+      if (file >= eFile::B)
       {
-        auto leftPiece = GetPieceType(static_cast<eRank>(rank + (forWhite ? 1 : -1)), static_cast<eFile>(file - 1));
+        auto leftPiece = GetPieceType(static_cast<eRank>(_UINT8(rank) + (forWhite ? 1 : -1)), static_cast<eFile>(_UINT8(file) - 1));
         if ((leftPiece.first != ePiece::none && leftPiece.second != forWhite) ||
              // check also if en passant capture is possible
             (m_enPassantPos.has_value() &&
-             m_enPassantPos->first == static_cast<eRank>(rank + (forWhite ? 1 : -1)) &&
-             m_enPassantPos->second == static_cast<eFile>(file - 1)))
+             m_enPassantPos->first == static_cast<eRank>(_UINT8(rank )+ (forWhite ? 1 : -1)) &&
+             m_enPassantPos->second == static_cast<eFile>(_UINT8(file) - 1)))
         {
-          if (!WouldBeCheckedAfterMove(rank, file, static_cast<eRank>(rank + (forWhite ? 1 : -1)),
-            static_cast<eFile>(file - 1), forWhite))
+          if (!WouldBeCheckedAfterMove(rank, file, static_cast<eRank>(_UINT8(rank) + (forWhite ? 1 : -1)),
+            static_cast<eFile>(_UINT8(file) - 1), forWhite))
           {
-            boolmat[rank + (forWhite ? 1 : -1)][file - 1] = true;
+            boolmat[_INT64(rank) + (forWhite ? 1 : -1)][_UINT8(file) - 1] = true;
           }
         }
       }
-      if (file <= f_G)
+      if (file <= eFile::G)
       {
-        auto rightPiece = GetPieceType(static_cast<eRank>(rank + (forWhite ? 1 : -1)), static_cast<eFile>(file + 1));
+        auto rightPiece = GetPieceType(static_cast<eRank>(_UINT8(rank) + (forWhite ? 1 : -1)), static_cast<eFile>(_UINT8(file) + 1));
         if ((rightPiece.first != ePiece::none && rightPiece.second != forWhite) ||
              // check also if en passant capture is possible
             (m_enPassantPos.has_value() &&
-             m_enPassantPos->first == static_cast<eRank>(rank + (forWhite ? 1 : -1)) &&
-             m_enPassantPos->second == static_cast<eFile>(file + 1)))
+             m_enPassantPos->first == static_cast<eRank>(_UINT8(rank) + (forWhite ? 1 : -1)) &&
+             m_enPassantPos->second == static_cast<eFile>(_UINT8(file) + 1)))
         {
-          if (!WouldBeCheckedAfterMove(rank, file, static_cast<eRank>(rank + (forWhite ? 1 : -1)),
-            static_cast<eFile>(file + 1), forWhite))
+          if (!WouldBeCheckedAfterMove(rank, file, static_cast<eRank>(_UINT8(rank) + (forWhite ? 1 : -1)),
+            static_cast<eFile>(_UINT8(file) + 1), forWhite))
           {
-            boolmat[rank + (forWhite ? 1 : -1)][file + 1] = true;
+            boolmat[_INT64(rank) + (forWhite ? 1 : -1)][_INT64(file) + 1] = true;
           }
         }
       }
@@ -138,10 +139,10 @@ namespace JC
     const auto& boardView = m_record.back();
 
     // assert that kings are actually at correct (saved) position
-    DEBUG_ASSERT(boardView[kingPos.first][kingPos.second].first == ePiece::king &&
-                 boardView[kingPos.first][kingPos.second].second == forWhite);
-    DEBUG_ASSERT(boardView[oppKingPos.first][oppKingPos.second].first == ePiece::king &&
-                 boardView[oppKingPos.first][oppKingPos.second].second != forWhite);
+    DEBUG_ASSERT(boardView[_UINT8(kingPos.first)][_UINT8(kingPos.second)].first == ePiece::king &&
+                 boardView[_UINT8(kingPos.first)][_UINT8(kingPos.second)].second == forWhite);
+    DEBUG_ASSERT(boardView[_UINT8(oppKingPos.first)][_UINT8(oppKingPos.second)].first == ePiece::king &&
+                 boardView[_UINT8(oppKingPos.first)][_UINT8(oppKingPos.second)].second != forWhite);
 
     // check if king is checked by one the following pieces (queen is included in bishop and rook)
     if (IsCheckedPieceDirection(ePiece::bishop, forWhite) ||
@@ -154,17 +155,17 @@ namespace JC
     // check if king is checked by a pawn
     if (forWhite)
     {
-      if (kingPos.first < r_7)
+      if (kingPos.first < eRank::_7)
       {
-        if (kingPos.second >= f_B &&
-            boardView[kingPos.first + 1][kingPos.second - 1].second != forWhite &&
-            boardView[kingPos.first + 1][kingPos.second - 1].first == ePiece::pawn)
+        if (kingPos.second >= eFile::B &&
+            boardView[_INT64(kingPos.first) + 1][_UINT8(kingPos.second) - 1].second != forWhite &&
+            boardView[_INT64(kingPos.first) + 1][_UINT8(kingPos.second) - 1].first == ePiece::pawn)
         {
           return true;
         }
-        if (kingPos.second <= f_G &&
-          boardView[kingPos.first + 1][kingPos.second + 1].second != forWhite &&
-          boardView[kingPos.first + 1][kingPos.second + 1].first == ePiece::pawn)
+        if (kingPos.second <= eFile::G &&
+          boardView[_INT64(kingPos.first) + 1][_INT64(kingPos.second) + 1].second != forWhite &&
+          boardView[_INT64(kingPos.first) + 1][_INT64(kingPos.second) + 1].first == ePiece::pawn)
         {
           return true;
         }
@@ -173,8 +174,8 @@ namespace JC
     
     // check if king is checked by other king (in the game not possible, but validation
     // necessary in order to get the next valid moves of the king
-    if (std::abs(kingPos.first - oppKingPos.first) <= 1 &&
-        std::abs(kingPos.second - oppKingPos.second) <= 1)
+    if (std::abs((int)kingPos.first - (int)oppKingPos.first) <= 1 &&
+        std::abs((int)kingPos.second - (int)oppKingPos.second) <= 1)
     {
       return true;
     }
@@ -185,15 +186,15 @@ namespace JC
   {
     boolmat_t validMoves = GetValidMoves(fromRank, fromFile, forWhite);
 
-    if (!validMoves[toRank][toFile])
+    if (!validMoves[_UINT8(toRank)][_UINT8(toFile)])
     {
       return false;
     }
-    m_removed.push_back(std::move(m_board[toRank][toFile]));
-    m_board[toRank][toFile] = std::move(m_board[fromRank][fromFile]);
+    m_removed.push_back(std::move(m_board[_UINT8(toRank)][_UINT8(toFile)]));
+    m_board[_UINT8(toRank)][_UINT8(toFile)] = std::move(m_board[_UINT8(fromRank)][_UINT8(fromFile)]);
 
     // if pawn was moved, reset corresponding counter
-    if (m_board[toRank][toFile] && m_board[toRank][toFile]->GetType() == ePiece::pawn)
+    if (m_board[_UINT8(toRank)][_UINT8(toFile)] && m_board[_UINT8(toRank)][_UINT8(toFile)]->GetType() == ePiece::pawn)
     {
       m_turnsWithoutPawn = 0;
     }
@@ -202,31 +203,31 @@ namespace JC
       m_turnsWithoutPawn++;
     }
     // if king was moved, update his position
-    if (m_board[toRank][toFile] && m_board[toRank][toFile]->GetType() == ePiece::king)
+    if (m_board[_UINT8(toRank)][_UINT8(toFile)] && m_board[_UINT8(toRank)][_UINT8(toFile)]->GetType() == ePiece::king)
     {
       auto& refKingPos = forWhite ? m_whiteKingPos : m_blackKingPos;
       refKingPos = std::pair(toRank, toFile);
     }
     // check if pawn captured en passant
-    else if (m_board[toRank][toFile] && m_board[toRank][toFile]->GetType() == ePiece::pawn &&
+    else if (m_board[_UINT8(toRank)][_UINT8(toFile)] && m_board[_UINT8(toRank)][_UINT8(toFile)]->GetType() == ePiece::pawn &&
       m_enPassantPos.has_value() &&
       m_enPassantPos->first == toRank && m_enPassantPos->second == toFile)
     {
       // delete pawn which was captured en passant (and assert that it actually is a pawn)
-      eRank rankOfPawnToCapture = static_cast<eRank>(toRank + (forWhite ? -1 : 1));
-      DEBUG_ASSERT(m_board[rankOfPawnToCapture][toFile] && 
-                   m_board[rankOfPawnToCapture][toFile]->GetType() == ePiece::pawn &&
-                   m_board[rankOfPawnToCapture][toFile]->IsWhite() != forWhite);
-      m_removed.back() = std::move(m_board[rankOfPawnToCapture][toFile]);
+      eRank rankOfPawnToCapture = static_cast<eRank>(_UINT8(toRank) + (forWhite ? -1 : 1));
+      DEBUG_ASSERT(m_board[_UINT8(rankOfPawnToCapture)][_UINT8(toFile)] &&
+                   m_board[_UINT8(rankOfPawnToCapture)][_UINT8(toFile)]->GetType() == ePiece::pawn &&
+                   m_board[_UINT8(rankOfPawnToCapture)][_UINT8(toFile)]->IsWhite() != forWhite);
+      m_removed.back() = std::move(m_board[_UINT8(rankOfPawnToCapture)][_UINT8(toFile)]);
     }
 
     // if pawn did double step, set en passant capture position
-    if (m_board[toRank][toFile] && m_board[toRank][toFile]->GetType() == ePiece::pawn &&
-        std::abs(fromRank - toRank) == 2)
+    if (m_board[_UINT8(toRank)][_UINT8(toFile)] && m_board[_UINT8(toRank)][_UINT8(toFile)]->GetType() == ePiece::pawn &&
+        std::abs((int)fromRank - (int)toRank) == 2)
     {
       // set en passant capture position: one rank below (for white) or above (for black) the current pawn position
       m_enPassantPos = std::make_optional<std::pair<eRank, eFile>>();
-      m_enPassantPos->first = static_cast<eRank>(toRank + (forWhite ? -1 : 1));
+      m_enPassantPos->first = static_cast<eRank>(_UINT8(toRank) + (forWhite ? -1 : 1));
       m_enPassantPos->second = toFile;
     }
     else
@@ -322,7 +323,7 @@ namespace JC
       }
     }
     DEBUG_ASSERT(false); // no king found, should never happen
-    return std::pair(r_1, f_A);
+    return std::pair(eRank::_1, eFile::A);
   }
 
   void CChessBoard::Reset()
@@ -346,8 +347,8 @@ namespace JC
       }
     }
 
-    m_whiteKingPos = std::pair(r_1, f_E);
-    m_blackKingPos = std::pair(r_8, f_E);
+    m_whiteKingPos = std::pair(eRank::_1, eFile::E);
+    m_blackKingPos = std::pair(eRank::_8, eFile::E);
     m_enPassantPos.reset();
 
     m_removed.clear();
@@ -476,8 +477,8 @@ namespace JC
 
     for (const auto& dir : s_moveDirMap.at(pieceDir))
     {
-      newRank = kingPos.first;
-      newFile = kingPos.second;
+      newRank = _UINT8(kingPos.first);
+      newFile = _UINT8(kingPos.second);
 
       do {
         newRank += dir.first;
@@ -515,11 +516,11 @@ namespace JC
     bool wouldBeChecked;
 
     // change current board view
-    piece_t pieceCopy = m_record.back()[toRank][toFile];
-    m_record.back()[toRank][toFile] = m_record.back()[fromRank][fromFile];
-    m_record.back()[fromRank][fromFile] = std::pair(ePiece::none, true);
+    piece_t pieceCopy = m_record.back()[_UINT8(toRank)][_UINT8(toFile)];
+    m_record.back()[_UINT8(toRank)][_UINT8(toFile)] = m_record.back()[_UINT8(fromRank)][_UINT8(fromFile)];
+    m_record.back()[_UINT8(fromRank)][_UINT8(fromFile)] = std::pair(ePiece::none, true);
 
-    if (m_record.back()[toRank][toFile].first == ePiece::king)
+    if (m_record.back()[_UINT8(toRank)][_UINT8(toFile)].first == ePiece::king)
     {
       auto& refKingPos = forWhite ? m_whiteKingPos : m_blackKingPos;
       refKingPos.first = toRank;
@@ -533,8 +534,8 @@ namespace JC
       wouldBeChecked = IsChecked(forWhite);
     }
     // undo changed board view
-    m_record.back()[fromRank][fromFile] = m_record.back()[toRank][toFile];
-    m_record.back()[toRank][toFile] = pieceCopy;
+    m_record.back()[_UINT8(fromRank)][_UINT8(fromFile)] = m_record.back()[_UINT8(toRank)][_UINT8(toFile)];
+    m_record.back()[_UINT8(toRank)][_UINT8(toFile)] = pieceCopy;
     
     return wouldBeChecked;
   }

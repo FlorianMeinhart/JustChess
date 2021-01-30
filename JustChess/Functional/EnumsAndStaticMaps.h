@@ -1,5 +1,8 @@
 #pragma once
 
+#define _UINT8(x) static_cast<uint8_t>(x)
+#define _INT64(x) static_cast<int64_t>(x)
+
 namespace JC
 {
   /// @brief States
@@ -33,14 +36,14 @@ namespace JC
     ePiece::king 
   };
 
-  enum eFile : uint8_t
+  enum class eFile : uint8_t
   {
-    f_A = 0, f_B, f_C, f_D, f_E, f_F, f_G, f_H
+    A = 0, B, C, D, E, F, G, H
   };
 
-  enum eRank: uint8_t
+  enum class eRank: uint8_t
   {
-    r_1 = 0, r_2, r_3, r_4, r_5, r_6, r_7, r_8
+    _1 = 0, _2, _3, _4, _5, _6, _7, _8
   };
   
   using vecPairRankFile_t = std::vector<std::pair<int, int>>;
@@ -63,25 +66,29 @@ namespace JC
     {std::pair(ePiece::none, true), {{}}},
     {std::pair(ePiece::none, false), {{}}},
 
-    {std::pair(ePiece::pawn, true), {{r_2,f_A}, {r_2,f_B}, {r_2,f_C}, {r_2,f_D},
-                                     {r_2,f_E}, {r_2,f_F}, {r_2,f_G}, {r_2,f_H}}},
-    {std::pair(ePiece::pawn, false), {{r_7,f_A}, {r_7,f_B}, {r_7,f_C}, {r_7,f_D},
-                                      {r_7,f_E}, {r_7,f_F}, {r_7,f_G}, {r_7,f_H}}},
+    {std::pair(ePiece::pawn, true), {{_UINT8(eRank::_2),_UINT8(eFile::A)}, {_UINT8(eRank::_2),_UINT8(eFile::B)}, 
+                                     {_UINT8(eRank::_2),_UINT8(eFile::C)}, {_UINT8(eRank::_2),_UINT8(eFile::D)},
+                                     {_UINT8(eRank::_2),_UINT8(eFile::E)}, {_UINT8(eRank::_2),_UINT8(eFile::F)}, 
+                                     {_UINT8(eRank::_2),_UINT8(eFile::G)}, {_UINT8(eRank::_2),_UINT8(eFile::H)}}},
+    {std::pair(ePiece::pawn, false), {{_UINT8(eRank::_7),_UINT8(eFile::A)}, {_UINT8(eRank::_7),_UINT8(eFile::B)}, 
+                                      {_UINT8(eRank::_7),_UINT8(eFile::C)}, {_UINT8(eRank::_7),_UINT8(eFile::D)},
+                                      {_UINT8(eRank::_7),_UINT8(eFile::E)}, {_UINT8(eRank::_7),_UINT8(eFile::F)},
+                                      {_UINT8(eRank::_7),_UINT8(eFile::G)}, {_UINT8(eRank::_7),_UINT8(eFile::H)}}},
 
-    {std::pair(ePiece::rook, true), {{r_1,f_A}, {r_1,f_H}}},
-    {std::pair(ePiece::rook, false), {{r_8,f_A}, {r_8,f_H}}},
+    {std::pair(ePiece::rook, true), {{_UINT8(eRank::_1),_UINT8(eFile::A)}, {_UINT8(eRank::_1),_UINT8(eFile::H)}}},
+    {std::pair(ePiece::rook, false), {{_UINT8(eRank::_8),_UINT8(eFile::A)}, {_UINT8(eRank::_8),_UINT8(eFile::H)}}},
 
-    {std::pair(ePiece::knight, true), {{r_1,f_B}, {r_1,f_G}}},
-    {std::pair(ePiece::knight, false), {{r_8,f_B}, {r_8,f_G}}},
+    {std::pair(ePiece::knight, true), {{_UINT8(eRank::_1),_UINT8(eFile::B)}, {_UINT8(eRank::_1),_UINT8(eFile::G)}}},
+    {std::pair(ePiece::knight, false), {{_UINT8(eRank::_8),_UINT8(eFile::B)}, {_UINT8(eRank::_8),_UINT8(eFile::G)}}},
 
-    {std::pair(ePiece::bishop, true), {{r_1,f_C}, {r_1,f_F}}},
-    {std::pair(ePiece::bishop, false), {{r_8,f_C}, {r_8,f_F}}},
+    {std::pair(ePiece::bishop, true), {{_UINT8(eRank::_1),_UINT8(eFile::C)}, {_UINT8(eRank::_1),_UINT8(eFile::F)}}},
+    {std::pair(ePiece::bishop, false), {{_UINT8(eRank::_8),_UINT8(eFile::C)}, {_UINT8(eRank::_8),_UINT8(eFile::F)}}},
 
-    {std::pair(ePiece::queen, true), {{r_1,f_D}}},
-    {std::pair(ePiece::queen, false), {{r_8,f_D}}},
+    {std::pair(ePiece::queen, true), {{_UINT8(eRank::_1),_UINT8(eFile::D)}}},
+    {std::pair(ePiece::queen, false), {{_UINT8(eRank::_8),_UINT8(eFile::D)}}},
 
-    {std::pair(ePiece::king, true), {{r_1,f_E}}},
-    {std::pair(ePiece::king, false), {{r_8,f_E}}},
+    {std::pair(ePiece::king, true), {{_UINT8(eRank::_1),_UINT8(eFile::E)}}},
+    {std::pair(ePiece::king, false), {{_UINT8(eRank::_8),_UINT8(eFile::E)}}},
   };
 
   /// @brief Map indicating which chess piece can make multiple moves

@@ -113,14 +113,14 @@ bool CharToChessRank(char rankChar, JC::eRank& rank)
 {
   switch (rankChar)
   {
-  case '1': rank = JC::r_1; break;
-  case '2': rank = JC::r_2; break;
-  case '3': rank = JC::r_3; break;
-  case '4': rank = JC::r_4; break;
-  case '5': rank = JC::r_5; break;
-  case '6': rank = JC::r_6; break;
-  case '7': rank = JC::r_7; break;
-  case '8': rank = JC::r_8; break;
+  case '1': rank = JC::eRank::_1; break;
+  case '2': rank = JC::eRank::_2; break;
+  case '3': rank = JC::eRank::_3; break;
+  case '4': rank = JC::eRank::_4; break;
+  case '5': rank = JC::eRank::_5; break;
+  case '6': rank = JC::eRank::_6; break;
+  case '7': rank = JC::eRank::_7; break;
+  case '8': rank = JC::eRank::_8; break;
   default:
     return false;
   }
@@ -131,22 +131,22 @@ bool CharToChessFile(char fileChar, JC::eFile& file)
 {
   switch (fileChar)
   {
-  case 'A': file = JC::f_A; break;
-  case 'a': file = JC::f_A; break;
-  case 'B': file = JC::f_B; break;
-  case 'b': file = JC::f_B; break;
-  case 'C': file = JC::f_C; break;
-  case 'c': file = JC::f_C; break;
-  case 'D': file = JC::f_D; break;
-  case 'd': file = JC::f_D; break;
-  case 'E': file = JC::f_E; break;
-  case 'e': file = JC::f_E; break;
-  case 'F': file = JC::f_F; break;
-  case 'f': file = JC::f_F; break;
-  case 'G': file = JC::f_G; break;
-  case 'g': file = JC::f_G; break;
-  case 'H': file = JC::f_H; break;
-  case 'h': file = JC::f_H; break;
+  case 'A': file = JC::eFile::A; break;
+  case 'a': file = JC::eFile::A; break;
+  case 'B': file = JC::eFile::B; break;
+  case 'b': file = JC::eFile::B; break;
+  case 'C': file = JC::eFile::C; break;
+  case 'c': file = JC::eFile::C; break;
+  case 'D': file = JC::eFile::D; break;
+  case 'd': file = JC::eFile::D; break;
+  case 'E': file = JC::eFile::E; break;
+  case 'e': file = JC::eFile::E; break;
+  case 'F': file = JC::eFile::F; break;
+  case 'f': file = JC::eFile::F; break;
+  case 'G': file = JC::eFile::G; break;
+  case 'g': file = JC::eFile::G; break;
+  case 'H': file = JC::eFile::H; break;
+  case 'h': file = JC::eFile::H; break;
   default:
     return false;
   }
@@ -186,22 +186,22 @@ void CheckValidMoves(JC::CChessBoard& board)
 
     switch (moveStr[0])
     {
-    case 'A': file = JC::f_A; break;
-    case 'a': file = JC::f_A; break;
-    case 'B': file = JC::f_B; break;
-    case 'b': file = JC::f_B; break;
-    case 'C': file = JC::f_C; break;
-    case 'c': file = JC::f_C; break;
-    case 'D': file = JC::f_D; break;
-    case 'd': file = JC::f_D; break;
-    case 'E': file = JC::f_E; break;
-    case 'e': file = JC::f_E; break;
-    case 'F': file = JC::f_F; break;
-    case 'f': file = JC::f_F; break;
-    case 'G': file = JC::f_G; break;
-    case 'g': file = JC::f_G; break;
-    case 'H': file = JC::f_H; break;
-    case 'h': file = JC::f_H; break;
+    case 'A': file = JC::eFile::A; break;
+    case 'a': file = JC::eFile::A; break;
+    case 'B': file = JC::eFile::B; break;
+    case 'b': file = JC::eFile::B; break;
+    case 'C': file = JC::eFile::C; break;
+    case 'c': file = JC::eFile::C; break;
+    case 'D': file = JC::eFile::D; break;
+    case 'd': file = JC::eFile::D; break;
+    case 'E': file = JC::eFile::E; break;
+    case 'e': file = JC::eFile::E; break;
+    case 'F': file = JC::eFile::F; break;
+    case 'f': file = JC::eFile::F; break;
+    case 'G': file = JC::eFile::G; break;
+    case 'g': file = JC::eFile::G; break;
+    case 'H': file = JC::eFile::H; break;
+    case 'h': file = JC::eFile::H; break;
     default:
       std::cout << "Invalid input." << std::endl;
       continue;
@@ -210,14 +210,14 @@ void CheckValidMoves(JC::CChessBoard& board)
 
     switch (moveStr[1])
     {
-    case '1': rank = JC::r_1; break;
-    case '2': rank = JC::r_2; break;
-    case '3': rank = JC::r_3; break;
-    case '4': rank = JC::r_4; break;
-    case '5': rank = JC::r_5; break;
-    case '6': rank = JC::r_6; break;
-    case '7': rank = JC::r_7; break;
-    case '8': rank = JC::r_8; break;
+    case '1': rank = JC::eRank::_1; break;
+    case '2': rank = JC::eRank::_2; break;
+    case '3': rank = JC::eRank::_3; break;
+    case '4': rank = JC::eRank::_4; break;
+    case '5': rank = JC::eRank::_5; break;
+    case '6': rank = JC::eRank::_6; break;
+    case '7': rank = JC::eRank::_7; break;
+    case '8': rank = JC::eRank::_8; break;
     default:
       std::cout << "Invalid input." << std::endl;
       continue;
