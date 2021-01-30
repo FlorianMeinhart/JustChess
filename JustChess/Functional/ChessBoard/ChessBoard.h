@@ -3,10 +3,8 @@
 #ifdef _DEBUG
 #define DEBUG_ASSERT(x) assert(x)
 #else
-#define DEBUG_ASSERT(x) /* DASSERT does nothing when not debugging */
+#define DEBUG_ASSERT(x) /* DEBUG_ASSERT does nothing when not debugging */
 #endif
-
-
 
 #define RANKS 8
 #define FILES 8
@@ -22,6 +20,9 @@ namespace JC
   public:
     CChessBoard(Logger logger)
       : m_logger(logger)
+      , m_whiteKingPos()
+      , m_blackKingPos()
+      , m_enPassantPos(std::nullopt)
     {}
     virtual ~CChessBoard() = default;
 
@@ -41,9 +42,9 @@ namespace JC
     /// @return @c true if specified color is checked.
     bool IsChecked(bool forWhite) const;
 
+    bool Move(eRank fromRank, eFile fromFile, eRank toRank, eFile toFile, bool forWhite);
+
     //intmat_t GetFieldsAttacked(bool byWhite);
-    //
-    //bool InCheck(bool forWhite);
     //bool CanCastle(bool forWhite);
     //void PromotePawn(eRank rank, eFile file, ePiece pieceType);
     //
@@ -68,12 +69,15 @@ namespace JC
     Logger m_logger;
     board_t m_board;
     removed_t m_removed;
-    record_t m_record;
+    /// @brief Record of all board views.
+    mutable record_t m_record;
 
     /// @brief Save white king position for faster access
-    std::pair<eRank, eFile> m_whiteKingPos;
+    mutable std::pair<eRank, eFile> m_whiteKingPos;
     /// @brief Save black king position for faster access
-    std::pair<eRank, eFile> m_blackKingPos;
+    mutable std::pair<eRank, eFile> m_blackKingPos;
+    /// @brief Remember position to capture en passant
+    std::optional<std::pair<eRank, eFile>> m_enPassantPos;
 
     /// @brief Returns current position of white or black king
     /// @param boardView 
@@ -84,6 +88,7 @@ namespace JC
     char PieceCharRep(const std::unique_ptr<CChessPiece>& pPiece) const;
 
     bool IsCheckedPieceDirection(ePiece pieceDir, bool forWhite) const;
+    bool WouldBeCheckedAfterMove(eRank fromRank, eFile fromFile, eRank toRank, eFile toFile, bool forWhite) const;
 
   };
 }

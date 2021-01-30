@@ -1,30 +1,133 @@
-#include <stdafx.h>
+﻿#include <stdafx.h>
 
 #include "Logger\StandardOutputLogger.h"
 #include "Functional\ChessBoard\ChessBoard.h"
 #include "Functional\ChessPieces\ChessPiece.h"
 
 void CheckValidMoves(JC::CChessBoard& board);
+void Play(JC::CChessBoard& board);
+bool CharToChessRank(char rankChar, JC::eRank& rank);
+bool CharToChessFile(char fileChar, JC::eFile& file);
 
 int main()
 {
   Logger logger = std::make_shared<CStandardOutputLogger>();
   logger->Info("Start JustChess");
-
-  std::cout << "Let's play chess!" << std::endl;
-
   JC::CChessBoard board(logger);
-  board.Reset();
-  //board.PrintCurrentBoard();
-  board.CreateNextRecord();
-  board.PrintRecord(-1);
 
-  std::cout << board.IsChecked(true) << std::endl;
-  std::cout << board.IsChecked(false) << std::endl;
-
-  CheckValidMoves(board);
+  Play(board);
+  //CheckValidMoves(board);
 
   logger->Info("End JustChess");
+}
+
+void Play(JC::CChessBoard& board)
+{
+  bool whiteToMove = true;
+  int turnCount = 0;
+  std::string moveStr;
+  JC::eFile fromFile;
+  JC::eRank fromRank;
+  JC::eFile toFile;
+  JC::eRank toRank;
+
+  board.Reset();
+  while (true)
+  {
+    std::cout << std::endl;
+    board.PrintRecord(-1);
+    std::cout << std::endl;
+
+    std::cout << (board.IsChecked(whiteToMove) ? "Check!" : "") << std::endl;
+    std::cout << (whiteToMove ? "White" : "Black") << "'s " << 
+      (turnCount/2 + 1) << ". move: " << std::flush;
+    std::cin >> moveStr;
+    //std::getline(std::cin, moveStr); // example: a2a4
+
+    // remove white space
+    moveStr.erase(std::remove_if(moveStr.begin(), moveStr.end(), ::isspace), moveStr.end());
+
+    if (moveStr == "exit")
+    {
+      std::cout << "Exit." << std::endl;
+      break;
+    }
+    if (moveStr == "reset")
+    {
+      std::cout << "Reset." << std::endl;
+      whiteToMove = true;
+      turnCount = 0;
+      board.Reset();
+      continue;
+    }
+
+    if (moveStr.length() != 4)
+    {
+      std::cout << "Invalid input." << std::endl;
+      continue;
+    }
+    
+    if (!CharToChessFile(moveStr[0], fromFile) ||
+        !CharToChessRank(moveStr[1], fromRank) ||
+        !CharToChessFile(moveStr[2], toFile) ||
+        !CharToChessRank(moveStr[3], toRank))
+    {
+      std::cout << "Invalid input." << std::endl;
+      continue;
+    }
+    if (!board.Move(fromRank, fromFile, toRank, toFile, whiteToMove))
+    {
+      std::cout << "Not a valid move." << std::endl;
+      continue;
+    }
+    turnCount++;
+    whiteToMove = !whiteToMove;
+  }
+}
+
+
+bool CharToChessRank(char rankChar, JC::eRank& rank)
+{
+  switch (rankChar)
+  {
+  case '1': rank = JC::r_1; break;
+  case '2': rank = JC::r_2; break;
+  case '3': rank = JC::r_3; break;
+  case '4': rank = JC::r_4; break;
+  case '5': rank = JC::r_5; break;
+  case '6': rank = JC::r_6; break;
+  case '7': rank = JC::r_7; break;
+  case '8': rank = JC::r_8; break;
+  default:
+    return false;
+  }
+  return true;
+}
+
+bool CharToChessFile(char fileChar, JC::eFile& file)
+{
+  switch (fileChar)
+  {
+  case 'A': file = JC::f_A; break;
+  case 'a': file = JC::f_A; break;
+  case 'B': file = JC::f_B; break;
+  case 'b': file = JC::f_B; break;
+  case 'C': file = JC::f_C; break;
+  case 'c': file = JC::f_C; break;
+  case 'D': file = JC::f_D; break;
+  case 'd': file = JC::f_D; break;
+  case 'E': file = JC::f_E; break;
+  case 'e': file = JC::f_E; break;
+  case 'F': file = JC::f_F; break;
+  case 'f': file = JC::f_F; break;
+  case 'G': file = JC::f_G; break;
+  case 'g': file = JC::f_G; break;
+  case 'H': file = JC::f_H; break;
+  case 'h': file = JC::f_H; break;
+  default:
+    return false;
+  }
+  return true;
 }
 
 

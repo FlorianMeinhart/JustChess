@@ -10,5 +10,6 @@
 #include <string_view>
 #include <cassert>
 #include <cmath>
+#include <optional>
 
 #include <Functional/EnumsAndStaticMaps.h>
