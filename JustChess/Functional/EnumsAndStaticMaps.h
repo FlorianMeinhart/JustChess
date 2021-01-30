@@ -2,6 +2,14 @@
 
 namespace JC
 {
+  /// @brief States
+  enum class eState : uint8_t
+  {
+    eNone = 0,
+    eInCheck,
+    eCheckmate,
+    eStalemate
+  };
   
   /// @brief Types of chess pieces
   enum class ePiece : uint8_t

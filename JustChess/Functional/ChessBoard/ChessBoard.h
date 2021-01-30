@@ -23,6 +23,7 @@ namespace JC
       , m_whiteKingPos()
       , m_blackKingPos()
       , m_enPassantPos(std::nullopt)
+      , m_turnsWithoutPawn(0)
     {}
     virtual ~CChessBoard() = default;
 
@@ -36,6 +37,7 @@ namespace JC
 
     piece_t GetPieceType(eRank rank, eFile file) const;
     boolmat_t GetValidMoves(eRank rank, eFile file, bool forWhite) const;
+
     /// @brief Check if white or black is checked. 
     /// Makes use of last board view in records.
     /// @param forWhite
@@ -47,13 +49,15 @@ namespace JC
     //intmat_t GetFieldsAttacked(bool byWhite);
     //bool CanCastle(bool forWhite);
     //void PromotePawn(eRank rank, eFile file, ePiece pieceType);
-    //
-    //bool Checkmate();
+    
+    /// @brief State (checkmate or stalemate)
+    eState CheckmateState(bool forWhite) const;
+    
     //bool MaterialInsufficient();
-    //bool ThreefoldRepitition();
-    //bool DueFiftyMoveRule();
-    //bool Stalemate();
+    bool ThreefoldRepetition();
+    bool DueFiftyMoveRule();
 
+    /// @brief Reset the chess board.
     void Reset();
     void PrintCurrentBoard();
     void PrintBoolMat(boolmat_t boolmat);
@@ -71,6 +75,7 @@ namespace JC
     removed_t m_removed;
     /// @brief Record of all board views.
     mutable record_t m_record;
+    mutable std::size_t m_turnsWithoutPawn;
 
     /// @brief Save white king position for faster access
     mutable std::pair<eRank, eFile> m_whiteKingPos;
@@ -85,8 +90,12 @@ namespace JC
     /// @return position: rank, file
     std::pair<eRank, eFile> FindKing(const view_t& boardView, bool forWhite) const;
 
-    char PieceCharRep(const std::unique_ptr<CChessPiece>& pPiece) const;
+    /// @brief Counts the number of 'true' elements in a boolean matrix
+    /// @param boolMat vector of vector of booleans
+    /// @return count of true elements
+    std::size_t CountBoolMat(const boolmat_t& boolMat) const;
 
+    char PieceCharRep(const std::unique_ptr<CChessPiece>& pPiece) const;
     bool IsCheckedPieceDirection(ePiece pieceDir, bool forWhite) const;
     bool WouldBeCheckedAfterMove(eRank fromRank, eFile fromFile, eRank toRank, eFile toFile, bool forWhite) const;
 

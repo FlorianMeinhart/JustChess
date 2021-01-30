@@ -38,9 +38,32 @@ void Play(JC::CChessBoard& board)
     board.PrintRecord(-1);
     std::cout << std::endl;
 
-    std::cout << (board.IsChecked(whiteToMove) ? "Check!" : "") << std::endl;
-    std::cout << (whiteToMove ? "White" : "Black") << "'s " << 
-      (turnCount/2 + 1) << ". move: " << std::flush;
+    if (board.ThreefoldRepetition())
+    {
+      std::cout << "Threefold repetition." << std::endl;
+      break;
+    }
+
+    switch (board.CheckmateState(whiteToMove))
+    {
+    case JC::eState::eNone:
+      std::cout << "" << std::endl;
+      break;
+    case JC::eState::eInCheck:
+      std::cout << "Check!" << std::endl;
+      break;
+    case JC::eState::eCheckmate:
+      std::cout << "Checkmate!" << std::endl;
+      break;
+    case JC::eState::eStalemate:
+      std::cout << "Stalemate!" << std::endl;
+      break;
+    default:
+      break;
+    }
+    
+    std::cout << (turnCount/2 + 1) << ". move of " <<
+      (whiteToMove ? "white: " : "black: ") << std::flush;
     std::cin >> moveStr;
     //std::getline(std::cin, moveStr); // example: a2a4
 

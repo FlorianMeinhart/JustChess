@@ -56,6 +56,11 @@ namespace JC
           }
           break; // exit loop because piece can't move further in this direction after capturing
         }
+        //otherwise it's a piece of the same color and it can't move further
+        else
+        {
+          break;
+        }
         newRank += dir.first;
         newFile += dir.second;
       } while (piece->CanMoveMultipleSteps());
@@ -187,6 +192,15 @@ namespace JC
     m_removed.push_back(std::move(m_board[toRank][toFile]));
     m_board[toRank][toFile] = std::move(m_board[fromRank][fromFile]);
 
+    // if pawn was moved, reset corresponding counter
+    if (m_board[toRank][toFile] && m_board[toRank][toFile]->GetType() == ePiece::pawn)
+    {
+      m_turnsWithoutPawn = 0;
+    }
+    else
+    {
+      m_turnsWithoutPawn++;
+    }
     // if king was moved, update his position
     if (m_board[toRank][toFile] && m_board[toRank][toFile]->GetType() == ePiece::king)
     {
@@ -194,20 +208,21 @@ namespace JC
       refKingPos = std::pair(toRank, toFile);
     }
     // check if pawn captured en passant
-    if (m_board[toRank][toFile] && m_board[toRank][toFile]->GetType() == ePiece::pawn &&
+    else if (m_board[toRank][toFile] && m_board[toRank][toFile]->GetType() == ePiece::pawn &&
       m_enPassantPos.has_value() &&
       m_enPassantPos->first == toRank && m_enPassantPos->second == toFile)
     {
-      // delete pawn which was capture en passant (and assert that it actually is a pawn)
+      // delete pawn which was captured en passant (and assert that it actually is a pawn)
       eRank rankOfPawnToCapture = static_cast<eRank>(toRank + (forWhite ? -1 : 1));
       DEBUG_ASSERT(m_board[rankOfPawnToCapture][toFile] && 
                    m_board[rankOfPawnToCapture][toFile]->GetType() == ePiece::pawn &&
                    m_board[rankOfPawnToCapture][toFile]->IsWhite() != forWhite);
       m_removed.back() = std::move(m_board[rankOfPawnToCapture][toFile]);
     }
+
     // if pawn did double step, set en passant capture position
     if (m_board[toRank][toFile] && m_board[toRank][toFile]->GetType() == ePiece::pawn &&
-             std::abs(fromRank - toRank) == 2)
+        std::abs(fromRank - toRank) == 2)
     {
       // set en passant capture position: one rank below (for white) or above (for black) the current pawn position
       m_enPassantPos = std::make_optional<std::pair<eRank, eFile>>();
@@ -220,6 +235,77 @@ namespace JC
     }
     CreateNextRecord();
     return true;
+  }
+
+  eState CChessBoard::CheckmateState(bool forWhite) const
+  {
+    /// count number of valid moves for all pieces for black or white;
+    /// if number is zero, player is either checkmate or it's a stalemate
+    
+    std::size_t countValidMoves = 0;
+    for (uint8_t rank = 0; rank < RANKS; rank++)
+    {
+      for (uint8_t file = 0; file < FILES; file++)
+      {
+        auto boolMat = GetValidMoves(static_cast<eRank>(rank), 
+                                     static_cast<eFile>(file), forWhite);
+        countValidMoves += CountBoolMat(boolMat);
+      }
+    }
+
+    bool inCheck = IsChecked(forWhite);
+    if (inCheck)
+    {
+      if (countValidMoves == 0)
+      {
+        return eState::eCheckmate;
+      }
+      else
+      {
+        return eState::eInCheck;
+      }
+    }
+    else
+    {
+      if (countValidMoves == 0)
+      {
+        return eState::eStalemate;
+      }
+      else
+      {
+        return eState::eNone;
+      }
+    }
+  }
+
+  bool CChessBoard::ThreefoldRepetition()
+  {
+    // look up the last moves until a pawn was moved,
+    // because with pawn move a repetition is not possible
+    if (m_turnsWithoutPawn < 12)
+    {
+      // at least 12 moves (turns) are necessary that threefold repetition can happen
+      return false;
+    }
+    int repetitions = 0;
+    const auto& currentView = m_record.back();
+    for (std::size_t ind = 1; ind <= m_turnsWithoutPawn; ind++) 
+    {
+      if (m_record[m_record.size() - 1 - ind] == currentView)
+      {
+        repetitions++;
+        if (repetitions == 3)
+        {
+          return true;
+        }
+      }
+    }
+    return false;
+  }
+
+  bool CChessBoard::DueFiftyMoveRule()
+  {
+    return m_turnsWithoutPawn >= 50;
   }
 
   std::pair<eRank, eFile> CChessBoard::FindKing(const view_t& boardView, bool forWhite) const
@@ -451,6 +537,16 @@ namespace JC
     m_record.back()[toRank][toFile] = pieceCopy;
     
     return wouldBeChecked;
+  }
+
+  std::size_t CChessBoard::CountBoolMat(const boolmat_t& boolMat) const
+  {
+    std::size_t count = 0;
+    for (const auto& vec : boolMat)
+    {
+      count += std::count(vec.begin(), vec.end(), true);
+    }
+    return count;
   }
 
 }
