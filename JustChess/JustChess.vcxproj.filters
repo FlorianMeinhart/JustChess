@@ -82,14 +82,14 @@
     <ClInclude Include="Functional\EnumsAndStaticMaps.h">
       <Filter>Header Files\Functional</Filter>
     </ClInclude>
-    <ClInclude Include="stdafx.h">
-      <Filter>Header Files\Logger</Filter>
-    </ClInclude>
     <ClInclude Include="Functional\ChessPieces\OtherPieces.h">
       <Filter>Header Files\Functional\ChessPieces</Filter>
     </ClInclude>
     <ClInclude Include="Functional\ChessBoard\ChessBoard.h">
       <Filter>Header Files\Functional\ChessBoard</Filter>
+    </ClInclude>
+    <ClInclude Include="stdafx.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

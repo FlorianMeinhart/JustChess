@@ -123,6 +123,18 @@ namespace JC
         }
       }
     }
+    // check if castling is possible
+    if (piece->GetType() == ePiece::king)
+    {
+      if (CanCastle(forWhite, true))
+      {
+        boolmat[forWhite ? _INT64(eRank::_1) : _INT64(eRank::_8)][_INT64(eFile::C)] = true;
+      }
+      if (CanCastle(forWhite, false))
+      {
+        boolmat[forWhite ? _INT64(eRank::_1) : _INT64(eRank::_8)][_INT64(eFile::G)] = true;
+      }
+    }
     return boolmat;
   }
 
@@ -193,8 +205,45 @@ namespace JC
     m_removed.push_back(std::move(m_board[_UINT8(toRank)][_UINT8(toFile)]));
     m_board[_UINT8(toRank)][_UINT8(toFile)] = std::move(m_board[_UINT8(fromRank)][_UINT8(fromFile)]);
 
+    // if king was moved two files, it was castling and also the rook has to be moved
+    if (m_board[_UINT8(toRank)][_UINT8(toFile)] && m_board[_UINT8(toRank)][_UINT8(toFile)]->GetType() == ePiece::king)
+    {
+      if (fromFile == eFile::E && toFile == eFile::C)
+      {
+        m_board[_UINT8(toRank)][_UINT8(eFile::D)] = std::move(m_board[_UINT8(toRank)][_UINT8(eFile::A)]);
+      }
+      else if (fromFile == eFile::E && toFile == eFile::G)
+      {
+        m_board[_UINT8(toRank)][_UINT8(eFile::F)] = std::move(m_board[_UINT8(toRank)][_UINT8(eFile::H)]);
+      }
+      else
+      {
+        auto& kingMoved = (forWhite ? m_whiteKingMoved : m_blackKingMoved);
+        kingMoved = true;
+      }
+    }
+    // if rook was moved from initial position, set corresponding flag for castling
+    if (m_board[_UINT8(toRank)][_UINT8(toFile)] && m_board[_UINT8(toRank)][_UINT8(toFile)]->GetType() == ePiece::rook)
+    {
+      if (fromRank == eRank::_1 && fromFile == eFile::A)
+      {
+        m_whiteRookAtQueenSideMoved = true;
+      }
+      else if (fromRank == eRank::_1 && fromFile == eFile::H)
+      {
+        m_whiteRookAtKingSideMoved = true;
+      }
+      else if (fromRank == eRank::_8 && fromFile == eFile::A)
+      {
+        m_blackRookAtQueenSideMoved = true;
+      }
+      else if (fromRank == eRank::_8 && fromFile == eFile::H)
+      {
+        m_blackRookAtKingSideMoved = true;
+      }
+    }
     // if pawn was moved, reset corresponding counter
-    if (m_board[_UINT8(toRank)][_UINT8(toFile)] && m_board[_UINT8(toRank)][_UINT8(toFile)]->GetType() == ePiece::pawn)
+    else if (m_board[_UINT8(toRank)][_UINT8(toFile)] && m_board[_UINT8(toRank)][_UINT8(toFile)]->GetType() == ePiece::pawn)
     {
       m_turnsWithoutPawn = 0;
     }
@@ -235,6 +284,36 @@ namespace JC
       m_enPassantPos.reset();
     }
     CreateNextRecord();
+    return true;
+  }
+
+  bool CChessBoard::CanCastle(bool forWhite, bool forQueenSide) const
+  {
+    bool kingMoved = forWhite ? m_whiteKingMoved : m_blackKingMoved;
+    bool rookMoved = forWhite ? 
+      (forQueenSide ? m_whiteRookAtQueenSideMoved : m_whiteRookAtKingSideMoved) :
+      (forQueenSide ? m_blackRookAtQueenSideMoved : m_blackRookAtKingSideMoved);
+    if (kingMoved || rookMoved)
+    {
+      return false;
+    }
+
+    eRank rank = forWhite ? eRank::_1 : eRank::_8;
+    eFile fromFile = eFile::E;
+    eFile toFile1 = forQueenSide ? eFile::C : eFile::F;
+    eFile toFile2 = forQueenSide ? eFile::D : eFile::G;
+    
+    if (m_board[_UINT8(rank)][_UINT8(toFile1)] != nullptr ||
+        m_board[_UINT8(rank)][_UINT8(toFile2)] != nullptr)
+    {
+      return false;
+    }
+    if (IsChecked(forWhite) ||
+        WouldBeCheckedAfterMove(rank, fromFile, rank, toFile1, forWhite) ||
+        WouldBeCheckedAfterMove(rank, fromFile, rank, toFile2, forWhite))
+    {
+      return false;
+    }
     return true;
   }
 
@@ -304,7 +383,7 @@ namespace JC
     return false;
   }
 
-  bool CChessBoard::DueFiftyMoveRule()
+  bool CChessBoard::DueFiftyMovesRule()
   {
     return m_turnsWithoutPawn >= 50;
   }

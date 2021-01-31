@@ -24,6 +24,12 @@ namespace JC
       , m_blackKingPos()
       , m_enPassantPos(std::nullopt)
       , m_turnsWithoutPawn(0)
+      , m_whiteRookAtQueenSideMoved(false)
+      , m_whiteRookAtKingSideMoved(false)
+      , m_whiteKingMoved(false)
+      , m_blackRookAtQueenSideMoved(false)
+      , m_blackRookAtKingSideMoved(false)
+      , m_blackKingMoved(false)
     {}
     virtual ~CChessBoard() = default;
 
@@ -44,10 +50,22 @@ namespace JC
     /// @return @c true if specified color is checked.
     bool IsChecked(bool forWhite) const;
 
+    /// @brief Move a chess piece from a rank and file to another rank and file. 
+    /// @param fromRank 
+    /// @param fromFile 
+    /// @param toRank 
+    /// @param toFile 
+    /// @param forWhite 
+    /// @return @c true if the move is possible.
     bool Move(eRank fromRank, eFile fromFile, eRank toRank, eFile toFile, bool forWhite);
 
+    /// @brief Check if castling is possible for either black or white.
+    /// @param forWhite for white or black
+    /// @param queenSide for queen side or king side
+    /// @return @c true if castling is possible.
+    bool CanCastle(bool forWhite, bool forQueenSide) const;
+
     //intmat_t GetFieldsAttacked(bool byWhite);
-    //bool CanCastle(bool forWhite);
     //void PromotePawn(eRank rank, eFile file, ePiece pieceType);
     
     /// @brief State (checkmate or stalemate)
@@ -55,7 +73,7 @@ namespace JC
     
     //bool MaterialInsufficient();
     bool ThreefoldRepetition();
-    bool DueFiftyMoveRule();
+    bool DueFiftyMovesRule();
 
     /// @brief Reset the chess board.
     void Reset();
@@ -83,6 +101,14 @@ namespace JC
     mutable std::pair<eRank, eFile> m_blackKingPos;
     /// @brief Remember position to capture en passant
     std::optional<std::pair<eRank, eFile>> m_enPassantPos;
+
+    bool m_whiteRookAtQueenSideMoved;
+    bool m_whiteRookAtKingSideMoved;
+    bool m_whiteKingMoved;
+
+    bool m_blackRookAtQueenSideMoved;
+    bool m_blackRookAtKingSideMoved;
+    bool m_blackKingMoved;
 
     /// @brief Returns current position of white or black king
     /// @param boardView 

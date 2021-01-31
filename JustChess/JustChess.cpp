@@ -4,10 +4,22 @@
 #include "Functional\ChessBoard\ChessBoard.h"
 #include "Functional\ChessPieces\ChessPiece.h"
 
+#define INIT_TIME \
+    std::chrono::time_point<std::chrono::system_clock> startTime;
+#define START_TIMER \
+    startTime = std::chrono::system_clock::now()
+#define STOP_TIMER \
+    std::chrono::duration_cast<std::chrono::microseconds>( \
+    std::chrono::system_clock::now() - startTime).count()
+    
+
 void CheckValidMoves(JC::CChessBoard& board);
 void Play(JC::CChessBoard& board);
 bool CharToChessRank(char rankChar, JC::eRank& rank);
 bool CharToChessFile(char fileChar, JC::eFile& file);
+std::string TimeText(std::string text, long long time_ms);
+void PrintTime(std::string text, long long time_ms);
+
 
 int main()
 {
@@ -31,6 +43,8 @@ void Play(JC::CChessBoard& board)
   JC::eFile toFile;
   JC::eRank toRank;
 
+  INIT_TIME;
+
   board.Reset();
   while (true)
   {
@@ -38,24 +52,32 @@ void Play(JC::CChessBoard& board)
     board.PrintRecord(-1);
     std::cout << std::endl;
 
+    START_TIMER;
     if (board.ThreefoldRepetition())
     {
       std::cout << "Threefold repetition." << std::endl;
+      PrintTime("ThreefoldRepetition (true): %t ms", STOP_TIMER);
       break;
     }
+    PrintTime("ThreefoldRepetition (false): %t ms", STOP_TIMER);
 
+    START_TIMER;
     switch (board.CheckmateState(whiteToMove))
     {
     case JC::eState::eNone:
+      PrintTime("CheckmateState (eNone): %t ms", STOP_TIMER);
       std::cout << "" << std::endl;
       break;
     case JC::eState::eInCheck:
+      PrintTime("CheckmateState (eInCheck): %t ms", STOP_TIMER);
       std::cout << "Check!" << std::endl;
       break;
     case JC::eState::eCheckmate:
+      PrintTime("CheckmateState (eCheckmate): %t ms", STOP_TIMER);
       std::cout << "Checkmate!" << std::endl;
       break;
     case JC::eState::eStalemate:
+      PrintTime("CheckmateState (eStalemate): %t ms", STOP_TIMER);
       std::cout << "Stalemate!" << std::endl;
       break;
     default:
@@ -98,11 +120,15 @@ void Play(JC::CChessBoard& board)
       std::cout << "Invalid input." << std::endl;
       continue;
     }
+
+    START_TIMER;
     if (!board.Move(fromRank, fromFile, toRank, toFile, whiteToMove))
     {
+      PrintTime("Move (false): %t ms", STOP_TIMER);
       std::cout << "Not a valid move." << std::endl;
       continue;
     }
+    PrintTime("Move (true): %t ms", STOP_TIMER);
     turnCount++;
     whiteToMove = !whiteToMove;
   }
@@ -239,5 +265,22 @@ void CheckValidMoves(JC::CChessBoard& board)
     std::cout << std::endl;
     board.PrintBoolMat(board.GetValidMoves(rank, file, forWhite));
   }
+}
+
+std::string TimeText(std::string text, long long time_micro_s)
+{
+  std::string replace = "%t";
+  std::size_t index;
+  std::string time_micro_s_str = std::to_string((double)time_micro_s / 1000);
+  if ((index = text.find(replace)) != std::string::npos)
+  {
+    text.replace(index, replace.length(), time_micro_s_str);
+  }
+  return text;
+}
+
+void PrintTime(std::string text, long long time_micro_s)
+{
+  std::cout << "\t" << TimeText(text, time_micro_s) << std::endl;
 }
 

@@ -11,5 +11,6 @@
 #include <cassert>
 #include <cmath>
 #include <optional>
+#include <chrono>
 
 #include <Functional/EnumsAndStaticMaps.h>
